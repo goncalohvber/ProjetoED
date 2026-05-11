@@ -1,4 +1,3 @@
-#ifndef supermercado_h
 #define supermercado_h
 
 #include <stdio.h>
@@ -67,15 +66,16 @@ typedef struct {
 typedef struct {
     int    id;
     char   nome[MAX_NOME];
-    char   operador[MAX_NOME];
-    int    ativa;                       /* 1=ativa, 0=inativa */
+    char   operador_nome[MAX_NOME];
+    int    operador_id;
+    int    ativa;
     Fila   fila;
-    double sim_time_fim_atendimento;    /* sim_time em que o cliente atual termina */
+    double sim_time_fim_atendimento;
     int    total_clientes_atendidos;
     int    total_produtos_vendidos;
     float  total_valor_vendido;
-    int    produtos_oferecidos;         /* nº de produtos oferecidos por espera excessiva */
-    float  valor_oferecido;             /* custo total das ofertas desta caixa */
+    int    produtos_oferecidos;
+    float  valor_oferecido;
 } Caixa;
 
 /* ================================================================
@@ -104,12 +104,3 @@ typedef struct {
     int          produtos_oferecidos_total;
     float        valor_oferecido_total;
 } Supermercado;
-
-/* ================================================================
-   FUNCIONARIO
-   ================================================================ */
-typedef struct {
-    int  id;
-    char nome[MAX_NOME];
-} Funcionario;
-#endif /* supermercado_h */

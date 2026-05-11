@@ -1,5 +1,6 @@
 #define supermercado_h
 
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,8 +12,6 @@
 #define MAX_NOME     100
 #define MAX_CAIXAS   20
 #define SIM_SPEED    600
-#define HORA_ABERTURA (6 * 3600)   /* 06:00 em segundos simulados */
-#define HORA_FECHO    (22 * 3600)  /* 22:00 em segundos simulados */
 #define HASH_SIZE 10007 // Gonçalo (procurar entender o pq de ser um numero primo)
 
 /* ================================================================
@@ -25,6 +24,8 @@ typedef struct {
     float max_preco;
     int   max_fila;
     int   min_fila;
+    int   hora_abertura;   /* em horas, ex: 6 */
+    int   hora_fecho;      /* em horas, ex: 22 */
 } Configuracao;
 
 /* ================================================================
@@ -104,3 +105,9 @@ typedef struct {
     int          produtos_oferecidos_total;
     float        valor_oferecido_total;
 } Supermercado;
+
+//Funções
+int lerConfiguracao(const char *ficheiro, Configuracao *config);
+void lerClientes(const char *ficheiro, HashTable *ht);
+Produto *lerProdutos(const char *ficheiro, int *total, int tempo_max);
+void lerDados(const char *ficheiro, Supermercado *sm);

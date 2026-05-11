@@ -1,0 +1,5 @@
+
+ESTA FUNÇÃO VAI SER USADA PARA HASH PARA INTEIROS
+int hash(int id_cliente) {
+    return id_cliente % HASH_SIZE;
+}

@@ -1,22 +1,113 @@
-#ifndef Ficheiros.h
+#define supermercado_h
+
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "supermercado.h"
 
+/* ================================================================
+   CONSTANTES
+   ================================================================ */
+#define MAX_NOME     100
+#define MAX_CAIXAS   20
+#define SIM_SPEED    600
+#define HASH_SIZE 10007 // Gonçalo (procurar entender o pq de ser um numero primo)
 
-/*Esta função lê a configuração. Ela primeiro abre o ficheiro e blablabla verifica se ele 
-existe... Bom, ela faz scan das palavras no ficheiro dentro do ciclo while, quando 
-chave = Max_Espera, ou o que andamos a procurar, ela lê o que está na frente do maximo de 
-espera (que vai ser o máximo de espera HAHAAHAH) e é isso. ;)*/
+/* ================================================================
+   CONFIGURAÇÃO
+   ================================================================ */
+typedef struct {
+    int   max_espera;
+    int   n_caixas;
+    int   tempo_atendimento_produto;
+    float max_preco;
+    int   max_fila;
+    int   min_fila;
+    int   hora_abertura;   /* em horas, ex: 6 */
+    int   hora_fecho;      /* em horas, ex: 22 */
+} Configuracao;
+
+/* ================================================================
+   PRODUTO
+   ================================================================ */
+typedef struct Produto {
+    int            id;
+    char           nome[MAX_NOME];
+    float          preco;
+    int            tempo_passagem;  /* gerado: rand() % (tempo_atend_prod - 2 + 1) + 2 */
+    struct Produto *proximo;
+} Produto;
+
+/* ================================================================
+   CLIENTE
+   ================================================================ */
+typedef struct Cliente {
+    int            id;
+    char           nome[MAX_NOME];
+    int            n_produtos;
+    Produto       *carrinho;           /* lista ligada de produtos */
+    double         sim_time_entrada;   /* sim_time quando entrou na fila */
+    int            produto_oferecido;  /* 1 se já recebeu oferta neste atendimento */
+    struct Cliente *proximo;           /* próximo cliente na fila */
+} Cliente;
+
+/* ================================================================
+   FILA
+   ================================================================ */
+typedef struct {
+    Cliente *frente;
+    Cliente *fim;
+    int      tamanho;
+} Fila;
+
+/* ================================================================
+   CAIXA
+   ================================================================ */
+typedef struct {
+    int    id;
+    char   nome[MAX_NOME];
+    char   operador_nome[MAX_NOME];
+    int    operador_id;
+    int    ativa;
+    Fila   fila;
+    double sim_time_fim_atendimento;
+    int    total_clientes_atendidos;
+    int    total_produtos_vendidos;
+    float  total_valor_vendido;
+    int    produtos_oferecidos;
+    float  valor_oferecido;
+} Caixa;
+
+/* ================================================================
+   HASHTABLE
+   ================================================================ */
+typedef struct NodoHash {
+    int             id_cliente;
+    Cliente        *cliente;       /* ponteiro para o cliente */
+    int             indice_caixa;  /* -1 se não está em nenhuma caixa */
+    struct NodoHash *proximo;      /* encadeamento para colisões */
+} NodoHash;
+
+typedef struct {
+    NodoHash *buckets[HASH_SIZE];
+    int       total_clientes;      /* útil para estatísticas */
+} HashTable;
+
+/* ================================================================
+   SUPERMERCADO
+   ================================================================ */
+typedef struct {
+    Caixa        caixas[MAX_CAIXAS];
+    Configuracao config;
+    HashTable    clientes;
+    double       sim_time_atual;
+    int          produtos_oferecidos_total;
+    float        valor_oferecido_total;
+} Supermercado;
+
+//Funções
 int lerConfiguracao(const char *ficheiro, Configuracao *config);
-
-
-/*Este aqui fiquei eu a entender como exatamente funcionava durante algum tempo, mas o claudio 
-soube explicar. vou explicar-vos +/- nos comentarios*/
-// VERIFICAR SE USAMOS FUNCIONARIOS
-Funcionario *lerFuncionarios(const char *ficheiro, int *total);
-
-
-#endif
+void lerClientes(const char *ficheiro, HashTable *ht);
+Produto *lerProdutos(const char *ficheiro, int *total, int tempo_max);
+void lerDados(const char *ficheiro, Supermercado *sm);

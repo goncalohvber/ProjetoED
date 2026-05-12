@@ -13,6 +13,8 @@
 #define MAX_CAIXAS   20
 #define SIM_SPEED    600
 #define HASH_SIZE 10007 // Gonçalo (procurar entender o pq de ser um numero primo)
+// É NÚMERO PRIMO HASH_SIZE CORRESPONDE AO NÚMERO DE BUCKETS
+// O CALCULO DO BUCKET É FEITO: BUCKET = ID (CLIENTE) % HASH_SIZE
 
 /* ================================================================
    CONFIGURAÇÃO
